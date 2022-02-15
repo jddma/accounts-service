@@ -11,6 +11,8 @@ func Run() {
 
 	g := r.Group("/api/v1")
 	config.DefinePaths(g)
+	config.SetCors(g)
+	config.SetLogger(g)
 
 	r.Run(os.Getenv("port"))
 }

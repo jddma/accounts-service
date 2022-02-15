@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"cine-accounts/app/DTO"
+	"cine-accounts/app/DTOs"
 	"cine-accounts/app/business"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"log"
 )
 
 func Login(ctx *gin.Context) {
-	loginRequestDTO := new(DTO.LoginRequestDTO)
+	loginRequestDTO := new(DTOs.LoginRequestDTO)
 	err := ctx.Bind(loginRequestDTO)
-	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
-	}
-	ctx.Status(business.LoginBusiness(loginRequestDTO))
+	handleError(ctx, err)
+
+	log.Printf("Usuario solicitado -> %s", loginRequestDTO.Email)
+	business.LoginBusiness(loginRequestDTO, ctx)
 }

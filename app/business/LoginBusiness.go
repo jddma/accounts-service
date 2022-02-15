@@ -1,23 +1,30 @@
 package business
 
 import (
-	"cine-accounts/app/DTO"
+	"cine-accounts/app/DTOs"
 	"cine-accounts/app/repository"
-	"golang.org/x/crypto/bcrypt"
+	"cine-accounts/app/util"
+	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
-func LoginBusiness(loginRequestDTO *DTO.LoginRequestDTO) int {
-	user := repository.FindByEmail(loginRequestDTO.Email)
-	if user.IdUser == 0 {
-		return http.StatusNotFound
+func LoginBusiness(loginRequestDTO *DTOs.LoginRequestDTO, ctx *gin.Context) {
+	user, err := repository.FindByEmail(loginRequestDTO.Email)
+	if validateConnectionWithDatabase(ctx, err) {
+		return
+	}
+	if user.Id == 0 {
+		log.Printf("No se ha encontrado el usuario -> %s", loginRequestDTO.Email)
+		ctx.Status(http.StatusNotFound)
 	}
 
-	pwdValidate := bcrypt.CompareHashAndPassword([]byte(user.Pwd), []byte(loginRequestDTO.Pwd))
-	if pwdValidate != nil {
-		return http.StatusUnauthorized
+	if util.ValidatePwd(loginRequestDTO.Pwd, user.Pwd) {
+		log.Printf("Credenciales incorrectas para usuario -> %s", loginRequestDTO.Email)
+		ctx.Status(http.StatusUnauthorized)
 	} else {
-		return http.StatusOK
+		log.Printf("Acceso concedido para usuario -> %s", loginRequestDTO.Email)
+		//To do Token
+		ctx.Status(http.StatusOK)
 	}
-	return user.IdUser
 }
