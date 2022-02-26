@@ -9,10 +9,10 @@ import (
 
 func ValidatePwd(pwd string, pwdHash string) bool {
 	pwdValidate := bcrypt.CompareHashAndPassword([]byte(pwdHash), []byte(pwd))
-	if pwdValidate != nil {
-		return false
-	} else {
+	if pwdValidate == nil {
 		return true
+	} else {
+		return false
 	}
 }
 

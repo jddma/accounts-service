@@ -1,15 +1,15 @@
 package DTOs
 
 type CreateNewUserRequestDTO struct {
-	Names          string `json:"Names"`
-	Lastnames      string `json:"Lastnames"`
-	DocumentType   string `json:"DocumentType"`
-	DocumentNumber string `json:"DocumentNumber"`
-	BirthDate      string `json:"BirthDate"`
+	Names          string `json:"names"`
+	Lastnames      string `json:"lastnames"`
+	DocumentType   string `json:"documentType"`
+	DocumentNumber string `json:"documentNumber"`
+	BirthDate      string `json:"birthDate"`
 	IdRole         int    `json:"idRole"`
-	Email          string `json:"Email"`
-	Pwd            string `json:"Pwd"`
-	Phone          string `json:"Phone"`
+	Email          string `json:"email"`
+	Pwd            string `json:"pwd"`
+	Phone          string `json:"phone"`
 }
 
 func (c CreateNewUserRequestDTO) SetPwdForLog(pwd string) CreateNewUserRequestDTO {
