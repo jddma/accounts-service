@@ -1,4 +1,4 @@
-module cine-accounts
+module accounts-service
 
 go 1.15
 

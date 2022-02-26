@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"cine-accounts/app/model"
+	"accounts-service/app/model"
 	"gorm.io/gorm"
 )
 
-func FindByDocumentNumber(documentNumber string) (*model.Person, error) {
+func FindPersonByDocumentNumber(documentNumber string) (*model.Person, error) {
 	db, err := openConnection()
 	var person model.Person
 	db.Where("document_number = ?", documentNumber).First(&person)

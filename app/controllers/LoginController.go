@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"cine-accounts/app/DTOs"
-	"cine-accounts/app/business"
+	"accounts-service/app/DTOs"
+	"accounts-service/app/business"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
-func Login(ctx *gin.Context) {
+func LoginController(ctx *gin.Context) {
 	loginRequestDTO := new(DTOs.LoginRequestDTO)
 	err := ctx.Bind(loginRequestDTO)
 	handleError(ctx, err)

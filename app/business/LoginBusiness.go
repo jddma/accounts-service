@@ -1,16 +1,16 @@
 package business
 
 import (
-	"cine-accounts/app/DTOs"
-	"cine-accounts/app/repository"
-	"cine-accounts/app/util"
+	"accounts-service/app/DTOs"
+	"accounts-service/app/repository"
+	"accounts-service/app/util"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 )
 
 func LoginBusiness(loginRequestDTO *DTOs.LoginRequestDTO, ctx *gin.Context) {
-	user, err := repository.FindByEmail(loginRequestDTO.Email)
+	user, err := repository.FindUserByEmail(loginRequestDTO.Email)
 	if validateConnectionWithDatabase(ctx, err) {
 		return
 	}

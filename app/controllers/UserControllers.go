@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"cine-accounts/app/DTOs"
-	"cine-accounts/app/business"
-	"cine-accounts/app/util"
+	"accounts-service/app/DTOs"
+	"accounts-service/app/business"
+	"accounts-service/app/util"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
-func CreateNewUser(ctx *gin.Context) {
+func CreateNewUserController(ctx *gin.Context) {
 	createNewUserRequestDTO := new(DTOs.CreateNewUserRequestDTO)
 	err := ctx.Bind(createNewUserRequestDTO)
 	handleError(ctx, err)

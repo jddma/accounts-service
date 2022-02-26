@@ -1,10 +1,10 @@
 package business
 
 import (
-	"cine-accounts/app/DTOs"
-	"cine-accounts/app/model"
-	"cine-accounts/app/repository"
-	"cine-accounts/app/util"
+	"accounts-service/app/DTOs"
+	"accounts-service/app/model"
+	"accounts-service/app/repository"
+	"accounts-service/app/util"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -23,7 +23,7 @@ func registerPerson(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO) (*mod
 	return person, err
 }
 
-func registerUser(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO, person *model.Person) (error, error) {
+func registerUser(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO, person *model.Person) (error, error, *model.User) {
 	user := model.NewUser(
 		createNewUserRequestDTO.IdRole,
 		person.Id,
@@ -32,11 +32,20 @@ func registerUser(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO, person 
 		createNewUserRequestDTO.Phone,
 	)
 	createErr, connectionErr := repository.CreateUser(user)
-	return createErr, connectionErr
+	return createErr, connectionErr, user
 }
 
 func CreateNewUserBusiness(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO, ctx *gin.Context) {
-	person, err := repository.FindByDocumentNumber(createNewUserRequestDTO.DocumentNumber)
+	user, err := repository.FindUserByEmail(createNewUserRequestDTO.Email)
+	if validateConnectionWithDatabase(ctx, err) {
+		return
+	}
+	if user.Id != 0 {
+		log.Printf("Ya existe un usuario para el correo -> %s", createNewUserRequestDTO.Email)
+		ctx.Status(http.StatusNotFound)
+	}
+	//Validar si ya existe la persona
+	person, err := repository.FindPersonByDocumentNumber(createNewUserRequestDTO.DocumentNumber)
 	if validateConnectionWithDatabase(ctx, err) {
 		return
 	}
@@ -49,19 +58,18 @@ func CreateNewUserBusiness(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO
 
 	} else {
 		log.Printf("Persona consultada en portal para cración de nuevo usuario -> %s", util.DtoToJson(person))
-		userValidate, err := repository.FindByPersonAndRole(person.Id, createNewUserRequestDTO.IdRole)
+		userValidate, err := repository.FindUserByPersonAndRole(person.Id, createNewUserRequestDTO.IdRole)
 		if validateConnectionWithDatabase(ctx, err) {
 			return
 		}
 		if userValidate.Id != 0 {
-			//
 			log.Printf("Ya existe un usuario para el id_persona -> %s y id_role -> %s", person.Id,
 				createNewUserRequestDTO.IdRole)
 			ctx.JSON(http.StatusBadRequest, util.UserDuplicateError)
 			return
 		}
 	}
-	createErr, connectionErr := registerUser(createNewUserRequestDTO, person)
+	createErr, connectionErr, userDb := registerUser(createNewUserRequestDTO, person)
 	if validateConnectionWithDatabase(ctx, connectionErr) {
 		return
 	}
@@ -71,5 +79,6 @@ func CreateNewUserBusiness(createNewUserRequestDTO *DTOs.CreateNewUserRequestDTO
 			return
 		}
 	}
-
+	log.Printf("Usuario creado en portal -> %s", util.DtoToJson(userDb))
+	ctx.Status(http.StatusCreated)
 }

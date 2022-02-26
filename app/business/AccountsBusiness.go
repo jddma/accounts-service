@@ -1,7 +1,7 @@
 package business
 
 import (
-	"cine-accounts/app/util"
+	"accounts-service/app/util"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

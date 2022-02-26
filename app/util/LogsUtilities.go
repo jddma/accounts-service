@@ -1,7 +1,7 @@
 package util
 
 import (
-	"cine-accounts/app/DTOs"
+	"accounts-service/app/DTOs"
 	"encoding/json"
 )
 

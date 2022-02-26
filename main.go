@@ -1,6 +1,6 @@
 package main
 
-import "cine-accounts/app"
+import "accounts-service/app"
 
 func main() {
 	app.Run()

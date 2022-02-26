@@ -1,7 +1,7 @@
 package app
 
 import (
-	"cine-accounts/app/config"
+	"accounts-service/app/config"
 	"github.com/gin-gonic/gin"
 	"os"
 )
