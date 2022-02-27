@@ -3,6 +3,7 @@ package business
 import (
 	"accounts-service/app/DTOs"
 	"accounts-service/app/repository"
+	"accounts-service/app/requestCatalog"
 	"accounts-service/app/util"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -22,8 +23,12 @@ func LoginBusiness(loginRequestDTO *DTOs.LoginRequestDTO, ctx *gin.Context) {
 	log.Printf("Usuario obtenido de la DB -> %s", util.DtoToJson(user))
 	if util.ValidatePwd(loginRequestDTO.Pwd, user.Pwd) {
 		log.Printf("Acceso concedido para usuario -> %s", loginRequestDTO.Email)
-		//To do Token
-		ctx.Status(http.StatusOK)
+		tokenResponseDTO, nil := requestCatalog.ConsumeJwtGenerator(user.Id, user.IdRole, ctx)
+		if err != nil {
+			return
+		}
+
+		ctx.JSON(http.StatusOK, tokenResponseDTO)
 	} else {
 		log.Printf("Credenciales incorrectas para usuario -> %s", loginRequestDTO.Email)
 		ctx.Status(http.StatusUnauthorized)

@@ -8,3 +8,4 @@ Micro servicio para la gestión de las cuentas de usuario.
 * db_pwd="{DB-pwd}"
 * db_name="{DB-name}"
 * port=":{port}"
+* auth_srv="{URL_AUTH_SERVICE}"
