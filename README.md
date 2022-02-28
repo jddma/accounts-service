@@ -9,3 +9,4 @@ Micro servicio para la gestión de las cuentas de usuario.
 * db_name="{DB-name}"
 * port=":{port}"
 * auth_srv="{URL_AUTH_SERVICE}"
+* pwd_cost="{bcrypt_hash_cost}"
