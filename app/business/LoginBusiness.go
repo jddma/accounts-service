@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func LoginBusiness(loginRequestDTO *DTOs.LoginRequestDTO, ctx *gin.Context) {
+func LoginBusiness(loginRequestDTO *DTOs.LoginRequestDTO, headersDTO *DTOs.AnonymousHeadersDTO, ctx *gin.Context) {
 	user, err := repository.FindUserByEmail(loginRequestDTO.Email)
 	if validateConnectionWithDatabase(ctx, err) {
 		return
@@ -23,7 +23,7 @@ func LoginBusiness(loginRequestDTO *DTOs.LoginRequestDTO, ctx *gin.Context) {
 	log.Printf("Usuario obtenido de la DB -> %s", util.DtoToJson(user))
 	if util.ValidatePwd(loginRequestDTO.Pwd, user.Pwd) {
 		log.Printf("Acceso concedido para usuario -> %s", loginRequestDTO.Email)
-		tokenResponseDTO, nil := requestCatalog.ConsumeJwtGenerator(user.Id, user.IdRole, ctx)
+		tokenResponseDTO, nil := requestCatalog.ConsumeJwtGenerator(user.Id, user.IdRole, headersDTO, ctx)
 		if err != nil {
 			return
 		}

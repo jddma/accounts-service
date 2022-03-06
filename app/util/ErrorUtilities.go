@@ -18,4 +18,8 @@ var (
 		Code:        "EU02",
 		Description: "Ya existe un usuario registrado para la persona y rol ingresado",
 	}
+	OrchestrationError = ErrorMsg{
+		Code:        "EU03",
+		Description: "Ocurrio un problema al orquestar los servicios. intente mas tarde",
+	}
 )

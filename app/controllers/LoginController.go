@@ -8,10 +8,17 @@ import (
 )
 
 func LoginController(ctx *gin.Context) {
+	headersDTO, err := getAnonymousHeaders(ctx)
+	if handleError(ctx, err) {
+		return
+	}
+
 	loginRequestDTO := new(DTOs.LoginRequestDTO)
-	err := ctx.Bind(loginRequestDTO)
-	handleError(ctx, err)
+	err = ctx.ShouldBindJSON(loginRequestDTO)
+	if handleError(ctx, err) {
+		return
+	}
 
 	log.Printf("Usuario solicitado -> %s", loginRequestDTO.Email)
-	business.LoginBusiness(loginRequestDTO, ctx)
+	business.LoginBusiness(loginRequestDTO, headersDTO, ctx)
 }
