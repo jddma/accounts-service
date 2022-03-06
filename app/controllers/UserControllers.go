@@ -11,7 +11,7 @@ import (
 func CreateNewUserController(ctx *gin.Context) {
 	createNewUserRequestDTO := new(DTOs.CreateNewUserRequestDTO)
 	err := ctx.ShouldBindJSON(createNewUserRequestDTO)
-	if handleError(ctx, err) {
+	if util.HandleError(ctx, err) {
 		return
 	}
 

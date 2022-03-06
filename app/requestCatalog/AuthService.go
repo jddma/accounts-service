@@ -24,13 +24,33 @@ func getAuthSrvURL(path string) string {
 	return URL
 }
 
-func ConsumeJwtGenerator(idUser int, idRole int, headersDTO *DTOs.AnonymousHeadersDTO, ctx *gin.Context) (*DTOs.TokenDTO, error) {
+func generateRequest(path string, method string, dto DTOs.DTO, auth bool, token string, ctx *gin.Context) (*http.Client, *http.Request) {
 	client := &http.Client{}
+	body := strings.NewReader(util.DtoToJson(dto))
+	request, _ := http.NewRequest(method, getAuthSrvURL(path), body)
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("uuid", ctx.GetHeader("uuid"))
+	if auth {
+		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	}
+	return client, request
+}
+
+func ConsumeJWTValidator(token string, ctx *gin.Context) (int, error) {
+	client, request := generateRequest("/api/v1/validate-token", "POST", nil, true, token, ctx)
+	response, err := client.Do(request)
+
+	if err != nil {
+		log.Printf("Error al consumir API KWT validator de authSrv -> %s", util.DtoToJson(err))
+		ctx.JSON(http.StatusInternalServerError, util.ErrorMsg{Code: "EUX", Description: err.Error()})
+		return 0, err
+	}
+	return response.StatusCode, nil
+}
+
+func ConsumeJwtGenerator(idUser int, idRole int, ctx *gin.Context) (*DTOs.TokenDTO, error) {
 	generateTokenRequestDTO := DTOs.NewGenerateTokenDTO(idUser, idRole)
-	log.Printf("Objeto request para authSrv GenerateJWT -> %s", util.DtoToJson(generateTokenRequestDTO))
-	body := strings.NewReader(util.DtoToJson(generateTokenRequestDTO))
-	request, _ := http.NewRequest("POST", getAuthSrvURL("/api/v1/token"), body)
-	addHeader(request, headersDTO)
+	client, request := generateRequest("/api/v1/token", "POST", generateTokenRequestDTO, false, "", ctx)
 
 	response, err := client.Do(request)
 	if err != nil {

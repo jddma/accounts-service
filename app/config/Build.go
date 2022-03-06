@@ -2,14 +2,15 @@ package config
 
 import (
 	"accounts-service/app/controllers"
+	"accounts-service/app/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func DefinePaths(router *gin.RouterGroup) {
-	router.POST("/login", controllers.LoginController)
-	router.POST("/user", controllers.CreateNewUserController)
+	router.POST("/login", middleware.ValidateHeaders(), controllers.LoginController)
+	router.POST("/user", middleware.ValidateAuthorization(), controllers.CreateNewUserController)
 
-	router.GET("/role", controllers.ConsultRolesController)
+	router.GET("/role", middleware.ValidateAuthorization(), controllers.ConsultRolesController)
 }
 
 func SetLogger(router *gin.RouterGroup) {
