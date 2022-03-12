@@ -2,17 +2,28 @@ package config
 
 import (
 	"accounts-service/app/controllers"
-	"accounts-service/app/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func DefinePaths(router *gin.RouterGroup) {
-	router.POST("/login", middleware.ValidateHeaders(), controllers.LoginController)
-	router.POST("/user", middleware.ValidateAuthorization(), controllers.CreateNewUserController)
+	router.POST("/login", controllers.LoginController)
+	router.POST("/user", controllers.CreateNewUserController)
 
-	router.GET("/role", middleware.ValidateAuthorization(), controllers.ConsultRolesController)
+	router.GET("/role", controllers.ConsultRolesController)
 }
 
 func SetLogger(router *gin.RouterGroup) {
 	router.Use(gin.Logger())
+
+	/*router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"Origin", "uuid"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	}))*/
 }

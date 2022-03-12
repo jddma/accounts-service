@@ -29,7 +29,7 @@ func generateRequest(path string, method string, dto DTOs.DTO, auth bool, token 
 	body := strings.NewReader(util.DtoToJson(dto))
 	request, _ := http.NewRequest(method, getAuthSrvURL(path), body)
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("uuid", ctx.GetHeader("uuid"))
+	request.Header.Add("uuid", "tmp")
 	if auth {
 		request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	}
