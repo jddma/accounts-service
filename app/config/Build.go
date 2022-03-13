@@ -3,6 +3,7 @@ package config
 import (
 	"accounts-service/app/controllers"
 	"accounts-service/app/middleware"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,4 +16,11 @@ func DefinePaths(router *gin.RouterGroup) {
 
 func SetLogger(router *gin.RouterGroup) {
 	router.Use(gin.Logger())
+}
+
+func GetCors() gin.HandlerFunc {
+	config := cors.DefaultConfig()
+	config.AddAllowHeaders("uuid", "Authorization")
+	config.AllowAllOrigins = true
+	return cors.New(config)
 }
